@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	defaultListen = 3001
-	defaultConfig = "/etc/dts/config.yaml"
+	DefaultListen = "0.0.0.0:3001"
+	DefaultConfig = "/etc/dts/config.yaml"
 )
 
 type Options struct {
@@ -32,7 +32,7 @@ func (o *Options) Complete() error {
 		o.ComponentConfig.StoreType = store.DefaultStoreType
 	}
 	if o.ComponentConfig.Default.Listen == "" {
-		o.ComponentConfig.Default.Listen = "0.0.0.0:3001"
+		o.ComponentConfig.Default.Listen = DefaultListen
 	}
 
 	if err := o.register(); err != nil {
