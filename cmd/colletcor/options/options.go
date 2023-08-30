@@ -28,9 +28,11 @@ func NewOptions() (*Options, error) {
 
 func (o *Options) Complete() error {
 	// TODO register config
-
 	if o.ComponentConfig.StoreType == "" {
 		o.ComponentConfig.StoreType = store.DefaultStoreType
+	}
+	if o.ComponentConfig.Default.Listen == "" {
+		o.ComponentConfig.Default.Listen = "0.0.0.0:3001"
 	}
 
 	if err := o.register(); err != nil {
