@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "v1/dts";
+
+message Ref {
+  string trace_id = 1;
+  string span_id = 2;
+  string type = 3;
+}
+
+message Process {
+  string hostname = 1;
+  string client_id = 2;
+}
+
+enum ValueType {
+  STRING  = 0;
+  BOOL    = 1;
+  INT64   = 2;
+  FLOAT64 = 3;
+  BINARY  = 4;
+};
+
+message KV {
+  string key = 1;
+  ValueType v_type = 2;
+  string v_str = 3;
+  bool v_bool = 4;
+  int64  v_int64 = 5;
+  double v_double = 6;
+  bytes v_binary = 7;
+}
+
+message Span {
+  string trace_id = 1;
+  string span_id = 2;
+  string operation_name = 3;
+  string service_name = 4;
+  google.protobuf.Timestamp start_time = 5;
+  google.protobuf.Timestamp end_time = 6;
+}
+
+message Trace {
+  string trace_id = 1;
+  string service_name = 2;
+  string operation_name = 3;
+  google.protobuf.Timestamp start_time = 4;
+  uint64 duration = 5;
+}
+
+message Batch {
+  repeated Span spans = 1;
+}
+
+message StreamReq {
+  string name = 1;
+}
+
+message StreamResp {
+  string greet = 1;
+}
+
+message PostSpansRequest {
+  Batch batch = 1;
+}
+
+message PostSpansResponse {
+
+}
+
+service CollectorService {
+  rpc PostSpans(PostSpansRequest) returns (PostSpansResponse);
+}
