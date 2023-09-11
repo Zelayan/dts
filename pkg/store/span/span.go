@@ -16,4 +16,5 @@ type SpanWriter interface {
 
 type SpanReader interface {
 	ListSpan(ctx context.Context, serviceName string) []*pb.Span
+	ListServices(ctx context.Context) ([]string, error)
 }

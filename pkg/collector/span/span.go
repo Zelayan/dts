@@ -15,11 +15,17 @@ type Interface interface {
 	Create(ctx context.Context, sp *dts.Span) error
 	BetchCreate(ctx context.Context, sps []*dts.Span) error
 	ListSpan(ctx context.Context, service string) ([]*dts.Span, error)
+	ListService(ctx context.Context) ([]string, error)
 }
 
 type span struct {
 	cc      config.Config
 	factory store.ShareDaoFactory
+}
+
+func (s *span) ListService(ctx context.Context) ([]string, error) {
+	services, err := s.factory.SpanStore().ListServices(ctx)
+	return services, err
 }
 
 func (s *span) ListSpan(ctx context.Context, service string) ([]*dts.Span, error) {

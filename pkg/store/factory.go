@@ -2,14 +2,13 @@ package store
 
 import (
 	"errors"
+	"github.com/Zelayan/dts/cmd/colletcor/config"
 	"github.com/Zelayan/dts/pkg/store/span"
 )
 
-type StoreType = string
-
 const (
-	DefaultStoreType = ("memory")
-	MysqlStore       = StoreType("mysql")
+	DefaultStoreType = "memory"
+	MysqlStore       = "mysql"
 )
 
 type ShareDaoFactory interface {
@@ -17,13 +16,14 @@ type ShareDaoFactory interface {
 }
 
 type shareDaoFactory struct {
-	storeType StoreType
+	storeType config.StoreType
+	mem       span.Storage
 }
 
 func (f *shareDaoFactory) SpanStore() span.Storage {
 	switch f.storeType {
 	case DefaultStoreType:
-		return span.NewMemoryStorage()
+		return f.mem
 	case MysqlStore:
 		// TODO mysql
 		break
@@ -33,7 +33,7 @@ func (f *shareDaoFactory) SpanStore() span.Storage {
 	return nil
 }
 
-func NewDaoFactory(storeType StoreType) (ShareDaoFactory, error) {
+func NewDaoFactory(storeType config.StoreType) (ShareDaoFactory, error) {
 	switch storeType {
 	case DefaultStoreType:
 	case MysqlStore:
@@ -42,5 +42,8 @@ func NewDaoFactory(storeType StoreType) (ShareDaoFactory, error) {
 		return nil, errors.New("does not support storage type")
 	}
 
-	return &shareDaoFactory{storeType: storeType}, nil
+	return &shareDaoFactory{
+		storeType: storeType,
+		mem:       span.NewMemoryStorage(),
+	}, nil
 }

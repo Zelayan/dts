@@ -4,11 +4,14 @@ import (
 	"github.com/Zelayan/dts/cmd/colletcor/config"
 	"github.com/Zelayan/dts/pkg/collector"
 	"github.com/Zelayan/dts/pkg/store"
+
+	"github.com/gin-gonic/gin"
 )
 
 const (
-	DefaultListen = "0.0.0.0:3001"
-	DefaultConfig = "/etc/dts/config.yaml"
+	DefaultListen      = "0.0.0.0:3001"
+	DefaultConfig      = "/etc/dts/config.yaml"
+	DefaultQueryListen = "0.0.0.0:4001"
 )
 
 type Options struct {
@@ -20,10 +23,14 @@ type Options struct {
 	Collector collector.CollectorInterface
 	// 默认的配置文件
 	ConfigFile string
+
+	HttpEngine *gin.Engine
 }
 
 func NewOptions() (*Options, error) {
-	return &Options{}, nil
+	return &Options{
+		HttpEngine: gin.Default(),
+	}, nil
 }
 
 func (o *Options) Complete() error {
@@ -31,8 +38,11 @@ func (o *Options) Complete() error {
 	if o.ComponentConfig.StoreType == "" {
 		o.ComponentConfig.StoreType = store.DefaultStoreType
 	}
-	if o.ComponentConfig.Default.Listen == "" {
-		o.ComponentConfig.Default.Listen = DefaultListen
+	if o.ComponentConfig.Default.Collector.Listen == "" {
+		o.ComponentConfig.Default.Collector.Listen = DefaultListen
+	}
+	if o.ComponentConfig.Default.Query.Listen == "" {
+		o.ComponentConfig.Default.Query.Listen = DefaultQueryListen
 	}
 
 	if err := o.register(); err != nil {

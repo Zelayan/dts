@@ -1,9 +1,12 @@
 package command
 
 import (
+	"github.com/Zelayan/dts/api/server/router"
 	"github.com/Zelayan/dts/api/server/router/collector"
 	pb "github.com/Zelayan/dts/proto-gen/v1/dts"
+	"log"
 	"net"
+	"net/http"
 	"os/signal"
 	"syscall"
 
@@ -45,8 +48,7 @@ func NewServerCommand() *cobra.Command {
 }
 
 func Run(opts *options.Options) error {
-
-	listen, err := net.Listen("tcp", opts.ComponentConfig.Default.Listen)
+	listen, err := net.Listen("tcp", opts.ComponentConfig.Default.Collector.Listen)
 	if err != nil {
 		return err
 	}
@@ -54,10 +56,31 @@ func Run(opts *options.Options) error {
 	server := grpc.NewServer()
 	pb.RegisterCollectorServiceServer(server, collector.NewCollectorServer(opts))
 
+	router.InstallRouter(opts)
+
+	srv := &http.Server{
+		Addr:    opts.ComponentConfig.Default.Query.Listen,
+		Handler: opts.HttpEngine,
+	}
 	go func() {
+		defer func() {
+			err := recover()
+			if err != nil {
+				fmt.Printf("xx")
+			}
+		}()
 		err = server.Serve(listen)
 		if err != nil {
-			klog.Fatalf("failed to listen collector server: %v", err)
+			log.Fatalf("failed to listen collector server: %v", err)
+		} else {
+			klog.Infof("collect listen: %d", opts.ComponentConfig.Default.Collector.Listen)
+		}
+	}()
+
+	go func() {
+		err := srv.ListenAndServe()
+		if err != nil {
+			klog.Fatalf("faild to listen query server: %v", err)
 		}
 	}()
 
