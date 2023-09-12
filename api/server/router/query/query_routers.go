@@ -1,8 +1,8 @@
 package query
 
 import (
+	"github.com/Zelayan/dts/api/server/httputils"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type StructuredResponse struct {
@@ -20,10 +20,15 @@ type structuredError struct {
 }
 
 func (q *queryRouter) getServices(c *gin.Context) {
-	service, err := q.c.Span().ListService(c.Request.Context())
+	r := httputils.NewResponse()
+
+	var (
+		err error
+	)
+	r.Result, err = q.c.Span().ListService(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		httputils.SetFailed(c, r, err)
 		return
 	}
-	c.JSON(http.StatusOK, service)
+	httputils.SetSuccess(c, r)
 }
