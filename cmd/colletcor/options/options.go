@@ -36,7 +36,7 @@ func NewOptions() (*Options, error) {
 func (o *Options) Complete() error {
 	// TODO register config
 	if o.ComponentConfig.StoreType == "" {
-		o.ComponentConfig.StoreType = store.DefaultStoreType
+		o.ComponentConfig.StoreType = store.EsStore
 	}
 	if o.ComponentConfig.Default.Collector.Listen == "" {
 		o.ComponentConfig.Default.Collector.Listen = DefaultListen

@@ -9,6 +9,7 @@ import (
 const (
 	DefaultStoreType = "memory"
 	MysqlStore       = "mysql"
+	EsStore          = "es"
 )
 
 type ShareDaoFactory interface {
@@ -27,6 +28,8 @@ func (f *shareDaoFactory) SpanStore() span.Storage {
 	case MysqlStore:
 		// TODO mysql
 		break
+	case EsStore:
+		return span.NewEsStore()
 	default:
 
 	}
@@ -37,6 +40,8 @@ func NewDaoFactory(storeType config.StoreType) (ShareDaoFactory, error) {
 	switch storeType {
 	case DefaultStoreType:
 	case MysqlStore:
+		break
+	case EsStore:
 		break
 	default:
 		return nil, errors.New("does not support storage type")
