@@ -21,7 +21,6 @@ type structuredError struct {
 
 func (q *queryRouter) getServices(c *gin.Context) {
 	r := httputils.NewResponse()
-
 	var (
 		err error
 	)
@@ -30,5 +29,20 @@ func (q *queryRouter) getServices(c *gin.Context) {
 		httputils.SetFailed(c, r, err)
 		return
 	}
+	httputils.SetSuccess(c, r)
+}
+
+func (q *queryRouter) getTraces(c *gin.Context) {
+	r := httputils.NewResponse()
+	var (
+		err error
+	)
+	traceId := c.Param("traceId")
+	r.Result, err = q.c.Span().GetTraces(c.Request.Context(), traceId)
+	if err != nil {
+		httputils.SetFailed(c, r, err)
+		return
+	}
+
 	httputils.SetSuccess(c, r)
 }

@@ -51,9 +51,20 @@ func (s *MemoryStore) WriteSpan(ctx context.Context, span *pb.Span) error {
 		// 保存同一个traces的所有span
 		tenant.spans[span.TraceId] = make([]*pb.Span, 0)
 	}
-	tenant.spans[span.SpanId] = append(tenant.spans[span.SpanId], span)
+	tenant.spans[span.TraceId] = append(tenant.spans[span.TraceId], span)
 	tenant.services[span.ServiceName] = struct{}{}
 	tenant.ids = append(tenant.ids, span.TraceId)
+	return nil
+}
+
+func (s *MemoryStore) ListSpanByTraceId(ctx context.Context, traceId string) []*pb.Span {
+	tenant := s.getTenant(tenancy.GetTenancy(ctx))
+	tenant.Lock()
+	defer tenant.Unlock()
+	spans := tenant.spans
+	if res, ok := spans[traceId]; ok {
+		return res
+	}
 	return nil
 }
 

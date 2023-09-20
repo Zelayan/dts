@@ -21,5 +21,6 @@ func (q *queryRouter) initRouter(httpEngine *gin.Engine) {
 	queryGroup := httpEngine.Group("/query")
 	{
 		queryGroup.GET("/services", q.getServices)
+		queryGroup.GET("/trace/:traceId", q.getTraces)
 	}
 }

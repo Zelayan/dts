@@ -16,11 +16,17 @@ type Interface interface {
 	BetchCreate(ctx context.Context, sps []*dts.Span) error
 	ListSpan(ctx context.Context, service string) ([]*dts.Span, error)
 	ListService(ctx context.Context) ([]string, error)
+	GetTraces(ctx context.Context, id string) ([]*dts.Span, error)
 }
 
 type span struct {
 	cc      config.Config
 	factory store.ShareDaoFactory
+}
+
+func (s *span) GetTraces(ctx context.Context, traceId string) ([]*dts.Span, error) {
+	spans := s.factory.SpanStore().ListSpanByTraceId(ctx, traceId)
+	return spans, nil
 }
 
 func (s *span) ListService(ctx context.Context) ([]string, error) {
