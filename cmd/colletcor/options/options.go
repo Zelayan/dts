@@ -4,6 +4,7 @@ import (
 	"github.com/Zelayan/dts/cmd/colletcor/config"
 	"github.com/Zelayan/dts/pkg/collector"
 	"github.com/Zelayan/dts/pkg/store"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,9 +35,21 @@ func NewOptions() (*Options, error) {
 }
 
 func (o *Options) Complete() error {
-	// TODO register config
+	if len(o.ConfigFile) == 0 {
+		if cfgFile := os.Getenv("ConfigFile"); cfgFile != "" {
+			o.ConfigFile = cfgFile
+		} else {
+			o.ConfigFile = DefaultConfig
+		}
+	}
+	c := config.New()
+	c.SetConfigType("yaml")
+	c.SetConfigFile(o.ConfigFile)
+	if err := c.Binding(&o.ComponentConfig); err != nil {
+		return err
+	}
 	if o.ComponentConfig.StoreType == "" {
-		o.ComponentConfig.StoreType = store.EsStore
+		o.ComponentConfig.StoreType = store.DefaultStoreType
 	}
 	if o.ComponentConfig.Default.Collector.Listen == "" {
 		o.ComponentConfig.Default.Collector.Listen = DefaultListen
@@ -64,7 +77,7 @@ func (o *Options) register() error {
 }
 
 func (o *Options) registerStore() error {
-	factory, err := store.NewDaoFactory(o.ComponentConfig.StoreType)
+	factory, err := store.NewDaoFactory(o.ComponentConfig)
 	if err != nil {
 		return err
 	}

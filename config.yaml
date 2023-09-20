@@ -2,3 +2,4 @@ default:
   collector:
     # 服务监听端口
     listen: "0.0.0.0:3001"
+storeType: "es"

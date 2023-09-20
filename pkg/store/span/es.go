@@ -39,11 +39,14 @@ func (e *EsStore) ListSpanByTraceId(ctx context.Context, traceId string) []*pb.S
 	panic("implement me")
 }
 
-func NewEsStore() Storage {
-	client, _ := elastic.NewClient(
+func NewEsStore() (Storage, error) {
+	client, err := elastic.NewClient(
 		elastic.SetSniff(false))
+	if err != nil {
+		return nil, err
+	}
 	return &EsStore{
 		config: config.Config{},
 		client: client,
-	}
+	}, nil
 }

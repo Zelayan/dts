@@ -2,6 +2,7 @@ package store
 
 import (
 	"errors"
+	"fmt"
 	"github.com/Zelayan/dts/cmd/colletcor/config"
 	"github.com/Zelayan/dts/pkg/store/span"
 )
@@ -19,6 +20,8 @@ type ShareDaoFactory interface {
 type shareDaoFactory struct {
 	storeType config.StoreType
 	mem       span.Storage
+	mysql     span.Storage
+	es        span.Storage
 }
 
 func (f *shareDaoFactory) SpanStore() span.Storage {
@@ -26,29 +29,41 @@ func (f *shareDaoFactory) SpanStore() span.Storage {
 	case DefaultStoreType:
 		return f.mem
 	case MysqlStore:
-		// TODO mysql
-		break
+		return f.mem
 	case EsStore:
-		return span.NewEsStore()
+		return f.es
 	default:
 
 	}
 	return nil
 }
 
-func NewDaoFactory(storeType config.StoreType) (ShareDaoFactory, error) {
-	switch storeType {
+func NewDaoFactory(config config.Config) (ShareDaoFactory, error) {
+	var (
+		mem   = span.NewMemoryStorage()
+		es    span.Storage
+		mysql span.Storage
+		err   error
+	)
+
+	switch config.StoreType {
 	case DefaultStoreType:
 	case MysqlStore:
 		break
 	case EsStore:
+		es, err = span.NewEsStore()
+		if err != nil {
+			return nil, fmt.Errorf("create es client failed:%v", err)
+		}
 		break
 	default:
 		return nil, errors.New("does not support storage type")
 	}
 
 	return &shareDaoFactory{
-		storeType: storeType,
-		mem:       span.NewMemoryStorage(),
+		storeType: config.StoreType,
+		mem:       mem,
+		mysql:     mysql,
+		es:        es,
 	}, nil
 }
