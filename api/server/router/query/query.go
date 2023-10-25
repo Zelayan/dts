@@ -1,7 +1,7 @@
 package query
 
 import (
-	"github.com/Zelayan/dts/cmd/colletcor/options"
+	"github.com/Zelayan/dts/cmd/collector/options"
 	"github.com/Zelayan/dts/pkg/collector"
 	"github.com/gin-gonic/gin"
 )

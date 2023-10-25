@@ -3,7 +3,7 @@ package store
 import (
 	"errors"
 	"fmt"
-	"github.com/Zelayan/dts/cmd/colletcor/config"
+	"github.com/Zelayan/dts/cmd/collector/config"
 	"github.com/Zelayan/dts/pkg/store/span"
 )
 

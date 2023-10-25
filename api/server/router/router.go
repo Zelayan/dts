@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/Zelayan/dts/api/server/router/query"
-	"github.com/Zelayan/dts/cmd/colletcor/options"
+	"github.com/Zelayan/dts/cmd/collector/options"
 )
 
 type Register func(opts *options.Options)

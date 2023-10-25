@@ -11,7 +11,7 @@ import (
 	"syscall"
 
 	"fmt"
-	"github.com/Zelayan/dts/cmd/colletcor/options"
+	"github.com/Zelayan/dts/cmd/collector/options"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"k8s.io/klog/v2"
@@ -19,7 +19,6 @@ import (
 )
 
 func NewServerCommand() *cobra.Command {
-
 	opts, err := options.NewOptions()
 	if err != nil {
 		klog.Fatalf("unable to initialize command options: %v", err)

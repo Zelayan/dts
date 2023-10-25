@@ -2,7 +2,7 @@ package span
 
 import (
 	"context"
-	"github.com/Zelayan/dts/cmd/colletcor/config"
+	"github.com/Zelayan/dts/cmd/collector/config"
 	pb "github.com/Zelayan/dts/proto-gen/v1/dts"
 	"github.com/olivere/elastic/v7"
 )

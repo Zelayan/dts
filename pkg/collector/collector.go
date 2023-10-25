@@ -1,7 +1,7 @@
 package collector
 
 import (
-	"github.com/Zelayan/dts/cmd/colletcor/config"
+	"github.com/Zelayan/dts/cmd/collector/config"
 	"github.com/Zelayan/dts/pkg/collector/span"
 	"github.com/Zelayan/dts/pkg/store"
 )

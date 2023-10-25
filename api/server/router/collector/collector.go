@@ -2,7 +2,7 @@ package collector
 
 import (
 	"context"
-	"github.com/Zelayan/dts/cmd/colletcor/options"
+	"github.com/Zelayan/dts/cmd/collector/options"
 	"github.com/Zelayan/dts/pkg/collector"
 	pb "github.com/Zelayan/dts/proto-gen/v1/dts"
 	"k8s.io/klog/v2"

@@ -8,3 +8,6 @@ proto:
 proto-tools:
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+build:
+	go build -ldflags "-X 'main.GoVersion=$(shell go version)' -X 'main.GitHash=$(shell git show -s --format=%H)' -X 'main.BuildTime=$(shell git show -s --format=%cd)'" -o collector ./cmd/collector/collectorserver.go
